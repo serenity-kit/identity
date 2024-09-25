@@ -1,10 +1,33 @@
 # Identity
 
-This project aims to define and implement a system where users can have a unique identity represented by public keys with the following properties:
+This project aims to define and implement a system where users can have a unique identity represented by a current public key with the following properties:
 
 - key rotation
 - key recovery
 - multi-device support
+
+## Components
+
+- User
+- User Epoch
+- Device
+
+A **User** has a unique identifier which is the `public_key` of the first epoch. It must be accompanied by a signature which includes all the user and first user epoch data to verify the proof of ownership fo the `private_key` and all the relevant data e.g. user `email`.
+A **User Epoch** is a version of a user with a unique `public_key`.
+A **Device** is a a separate set of private/public keys that has access to a user epoch.
+
+## Rough ideas
+
+- Each Epoch has a content section where public keys (encryption and signing) are stored.
+- You want clear distinction between the key that can evolve epoch and the epoch content, because there might be a lot of devices (web session) that are temporary and should not be able to evolve the epoch.
+- The epoch private key could be splitted into multiple shares and then distributed to multiple devices. Depending on the application and which and how many devices are added a different set of devices are responsible to evolve the epoch.
+- In a distributed setup the only way I can envision this to work is that more than 50% of the splitted key parts are necessary to evolve to the next epoch. Because in this case they will have the new epoch and you can't have a fork without a malicious device.
+
+## Issues
+
+- How to avoid sharing keys and ideally leverage features of systems to only encrypt/sign, but the key can't leave the system e.g. passkeys in the browser.
+
+### User Epoch
 
 ## Building Blocks
 
